@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoltMaster PRO | Demo Version</title>
+
+<style>
+:root {
+    --bg: #020617;
+    --card-bg: #111827;
+    --accent: #22c55e;
+    --warning: #facc15;
+    --danger: #f87171;
+    --premium: #818cf8;
+    --text-dim: #94a3b8;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: white;
+}
+
+header {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    border-bottom: 1px solid #1e293b;
+}
+
+h1 { color: var(--accent); margin: 0; font-size: 26px; }
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px 15px 100px 15px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 18px;
+    margin-top: 20px;
+    border: 1px solid #1e293b;
+    position: relative;
+    overflow: hidden;
+}
+
+.card h3 {
+    margin: 0 0 15px 0;
+    color: var(--warning);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.locked-badge {
+    position: absolute;
+    top: 15px;
+    right: -30px;
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    padding: 5px 35px;
+    transform: rotate(45deg);
+    font-weight: bold;
+}
+
+label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-top: 12px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    background: #0f172a;
+    color: white;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+input::placeholder {
+    color: #475569;
+    opacity: 1;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #052e16;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.result-box {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    border-left: 4px solid var(--accent);
+    display: none;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.buy-btn {
+    background: var(--warning);
+    color: #422006;
+    margin-top: 25px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    box-shadow: 0 4px 20px rgba(250, 204, 21, 0.4);
+    transition: transform 0.2s;
+}
+
+.buy-btn:active { transform: scale(0.95); }
+
+.ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 10px;
+    color: var(--text-dim);
+}
+
+.ref-table th, .ref-table td {
+    border: 1px solid #1e293b;
+    padding: 8px;
+    text-align: left;
+}
+
+.ref-table th { background: #1e293b; color: var(--warning); }
+
+#phaseIndicator {
+    padding: 8px; border-radius: 8px; text-align: center;
+    font-size: 12px; font-weight: bold; margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚡ VoltMaster PRO</h1>
+    <p style="color: var(--danger); font-size: 11px; font-weight: bold; letter-spacing: 2px;">DEMO VERSION</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h3>Standard Reference (Preview)</h3>
+        <table class="ref-table">
+            <thead>
+                <tr><th>Cable</th><th>1Φ mV</th><th>3Φ mV</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>1.5</td><td>29.0</td><td>25.0</td></tr>
+                <tr><td>2.5</td><td>18.0</td><td>15.0</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size: 10px; color: var(--text-dim); margin-top: 10px;">Full database locked in Demo.</p>
+    </div>
+
+    <div class="card">
+        <h3>Load Estimation (PRO)</h3>
+        <select id="phase" onchange="syncUI()">
+            <option value="1">Single Phase (240V)</option>
+            <option value="3">Three Phase (415V)</option>
+        </select>
+        <div id="phaseIndicator">MODE: SINGLE PHASE</div>
+        
+        <label>Load Power (Watts)</label>
+        <input id="pW" type="number" inputmode="decimal" placeholder="Max 1000W in Demo">
+        <label>Voltage (V)</label>
+        <input id="pV" type="number" inputmode="decimal" value="240">
+        <label>Power Factor (PF)</label>
+        <input id="pPF" type="number" inputmode="decimal" value="0.85">
+        <label>Demand Factor (DF)</label>
+        <input id="pDF" type="number" inputmode="decimal" value="1.0">
+        
+        <button onclick="calcLoad()">Calculate Analysis</button>
+        <div id="resLoad" class="result-box"></div>
+    </div>
+
+    <div class="card">
+        <div class="locked-badge">LOCKED</div>
+        <h3>Cable & MCB Selector</h3>
+        <label>Design Current (Amps)</label>
+        <input type="number" disabled placeholder="Locked">
+        <button onclick="lockFeature('resSelector')" style="background:#1e293b; color:#64748b;">Get Recommendations</button>
+        <div id="resSelector" class="result-box" style="background:#1e1b4b; color:#818cf8; border-left-color:#818cf8;"></div>
+    </div>
+
+    <div class="card">
+        <div class="locked-badge">LOCKED</div>
+        <h3>Voltage Drop Analysis</h3>
+        <label>Current (A)</label>
+        <input type="number" disabled placeholder="Locked">
+        <button onclick="lockFeature('resVD')" style="background:#1e293b; color:#64748b;">Check Voltage Drop</button>
+        <div id="resVD" class="result-box" style="background:#1e1b4b; color:#818cf8; border-left-color:#818cf8;"></div>
+    </div>
+
+    <div class="card">
+        <h3>Basic Ohm & Power (Trial)</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div><label>Volts (V)</label><input id="oV" type="number" placeholder="240"></div>
+            <div><label>Amps (I)</label><input id="oI" type="number" placeholder="10"></div>
+        </div>
+        <button onclick="calcOhmPower()" style="background:var(--warning)">Solve Now</button>
+        <div id="resOhm" class="result-box" style="background:#064e3b; color:#a7f3d0;"></div>
+    </div>
+
+    <a href="https://wa.me/60194215250?text=Hello%20Firdaus,%20saya%20berminat%20untuk%20membeli%20lesen%20penuh%20VoltMaster%20PRO%20Full%20Version." class="buy-btn">
+        Upgrade to PRO Version
+    </a>
+
+</div>
+
+<script>
+function syncUI() {
+    const phase = document.getElementById("phase").value;
+    const ind = document.getElementById("phaseIndicator");
+    const vIn = document.getElementById("pV");
+    if(phase == "1") {
+        ind.style.background = "#064e3b"; ind.style.color = "#4ade80"; ind.innerText = "MODE: SINGLE PHASE"; vIn.value = "240";
+    } else {
+        ind.style.background = "#451a03"; ind.style.color = "#fbbf24"; ind.innerText = "MODE: THREE PHASE"; vIn.value = "415";
+    }
+}
+
+function calcLoad() {
+    const P = +pW.value;
+    const res = document.getElementById("resLoad");
+    
+    if(P > 1000) {
+        res.style.display = "block";
+        res.style.background = "#450a0a";
+        res.style.color = "#f87171";
+        res.style.borderLeftColor = "#ef4444";
+        res.innerHTML = "⚠️ DEMO LIMIT<br>Loads over 1000W are locked in Trial version.<br><br><b>Upgrade to PRO for industrial use.</b>";
+        return;
+    }
+
+    const V = +pV.value; const PF = +pPF.value; const DF = +pDF.value;
+    const phase = +document.getElementById("phase").value;
+    if(!P || !V) return;
+
+    let I = (phase === 1) ? ((P*DF) / V) : ((P*DF) / (Math.sqrt(3) * V * PF));
+    let safeI = I * 1.25;
+    const mcbSizes = [6, 10, 16];
+    let mcb = mcbSizes.find(s => s >= safeI) || "Unlock PRO";
+
+    res.style.display = "block";
+    res.style.background = "#064e3b";
+    res.style.color = "#a7f3d0";
+    res.style.borderLeftColor = "#22c55e";
+    res.innerHTML = `DEMO REPORT:<br>Current: ${I.toFixed(2)}A<br>Suggested MCB: ${mcb}`;
+}
+
+function lockFeature(id) {
+    const el = document.getElementById(id);
+    el.style.display = "block";
+    el.innerHTML = "💎 PREMIUM FEATURE<br>This module is only available in the Full Version. Please upgrade.";
+}
+
+function calcOhmPower() {
+    const V = +oV.value; const I = +oI.value;
+    if(!V || !I) return;
+    const res = document.getElementById("resOhm");
+    res.style.display = "block";
+    res.innerHTML = `Resistance: ${(V/I).toFixed(2)} Ω<br>Power: ${(V*I).toFixed(2)} W`;
+}
+
+syncUI();
+</script>
+
+</body>
+</html>
